@@ -11,11 +11,14 @@ public class TriggerDamageDealer : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
+        Debug.Log("Триггер");
         bool isTarget = (targetLayers & (1 << collision.gameObject.layer)) != 0;
         if (!isTarget) return;
+        Debug.Log("подходит");
 
         if (collision.TryGetComponent<IDamagable>(out IDamagable damagable))
         {
+            Debug.Log("Взял дамагл");
             damagable.TakeDamage(damage);
             DealtDamage?.Invoke();
         }

@@ -1,7 +1,8 @@
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class Player : MonoBehaviour, IDamagable
 {
+    public Health HealthComponent;
 
     public float force = 1500;
     public float forceInAir = 500;
@@ -24,10 +25,15 @@ public class Player : MonoBehaviour
     public int jumpsAvailable = 0;
 
 
+    private void Awake()
+    {
+        HealthComponent = new Health(3, 3);
+    }
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
         groundCheck.OnGroundChanged.AddListener(ChangeGroundedState);
+
     }
 
     void ChangeGroundedState(bool grounded)
@@ -112,5 +118,10 @@ public class Player : MonoBehaviour
         float clampedY = Mathf.Clamp(rb.linearVelocity.y, -MaxSpeedY, MaxSpeedY);
 
         rb.linearVelocity = new Vector2(clampedX, clampedY);
+    }
+
+    public void TakeDamage(int amount)
+    {
+        HealthComponent.TakeDamage(amount);
     }
 }
