@@ -1,5 +1,7 @@
 using System.Collections;
 using UnityEngine;
+using Cysharp.Threading.Tasks;
+using System.Threading;
 
 public class Canon : MonoBehaviour
 {
@@ -23,9 +25,18 @@ public class Canon : MonoBehaviour
     public float DelayBetweenReturn = 0.05f;
     public float ReturnDuration = 1;
 
+    private CancellationTokenSource _cts;
+
     private void Start()
     {
         elapsedTime = interval;
+        _cts = new CancellationTokenSource();
+    }
+
+    private void OnDestroy()
+    {
+        _cts?.Cancel();
+        _cts?.Dispose();
     }
 
     void Update()
@@ -50,24 +61,25 @@ public class Canon : MonoBehaviour
 
     void Shoot()
     {
-        Projectile projectile = Instantiate(ProjectilePrefab, shootpoint.position, Quaternion.identity).GetComponent<Projectile>();
+        Projectile projectile = Instantiate(ProjectilePrefab, shootpoint.position, Quaternion.identity)
+                                .GetComponent<Projectile>();
 
         projectile.Initialize(1, shootpoint.right, 10, 3);
         SoudManager.PlaySfx(shootSound);
-        StartCoroutine(ShootAnim());
-
-
-
+        
+        //StartCoroutine(ShootAnim());
+        ShootAnimAsync(_cts.Token).Forget();
     }
 
-    IEnumerator ShootAnim()
+    //Старая корутинная анимация
+    /*IEnumerator ShootAnim()
     {
         float distance = Vector2.Distance(RightLocalPosition, LeftLocalPosition);
 
         //отдача
-        while((Vector2)GunBarrel.localPosition != RightLocalPosition)
+        while ((Vector2)GunBarrel.localPosition != RightLocalPosition)
         {
-            GunBarrel.localPosition = Vector2.MoveTowards(GunBarrel.localPosition, RightLocalPosition, distance * Time.deltaTime/ GoBackDuration);
+            GunBarrel.localPosition = Vector2.MoveTowards(GunBarrel.localPosition, RightLocalPosition, distance * Time.deltaTime / GoBackDuration);
             yield return null;
         }
 
@@ -80,7 +92,48 @@ public class Canon : MonoBehaviour
             GunBarrel.localPosition = Vector2.MoveTowards(GunBarrel.localPosition, LeftLocalPosition, distance * Time.deltaTime / ReturnDuration);
             yield return null;
         }
+    }*/
+
+    async UniTaskVoid ShootAnimAsync(CancellationToken token)
+    {
+        try
+        {
+            float distance = Vector2.Distance(RightLocalPosition, LeftLocalPosition);
+
+            //отдача
+            while ((Vector2)GunBarrel.localPosition != RightLocalPosition)
+            {
+                token.ThrowIfCancellationRequested();
+
+                GunBarrel.localPosition = Vector2.MoveTowards(
+                    GunBarrel.localPosition,
+                    RightLocalPosition,
+                    distance * Time.deltaTime / GoBackDuration);
+
+                await UniTask.Yield(PlayerLoopTiming.Update, token);
+            }
+
+            //ожидание
+            await UniTask.Delay(System.TimeSpan.FromSeconds(DelayBetweenReturn),
+                cancellationToken: token);
+
+            //возврат
+            while ((Vector2)GunBarrel.localPosition != LeftLocalPosition)
+            {
+                token.ThrowIfCancellationRequested();
+
+                GunBarrel.localPosition = Vector2.MoveTowards(
+                                                    GunBarrel.localPosition,
+                                                    LeftLocalPosition,
+                                                    distance * Time.deltaTime / ReturnDuration);
+
+                await UniTask.Yield(PlayerLoopTiming.Update, token);
+            }
+        }
+        catch (System.OperationCanceledException)
+        {
+            Debug.Log("Анимация отменена");
+        }
+
     }
-
-
 }
