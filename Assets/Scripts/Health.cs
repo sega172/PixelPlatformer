@@ -12,22 +12,34 @@ public class Health
     public int Hp { get; private set; }
     public int MaxHp { get; private set; }
 
-    public Health(HealthSaveData data)
-    {
-        MaxHp = data.MaxHp> 0 ? data.MaxHp : throw new ArgumentException("MaxHp must be positive");
-        Hp = Mathf.Clamp(data.Hp, 0, MaxHp);
-        
-        Alive = Hp > 0;
-    }
-
     public Health(int hp, int maxHp)
     {
         MaxHp = maxHp > 0 ? maxHp : throw new ArgumentException("MaxHp must be positive");
         this.Hp = Mathf.Clamp(hp, 0, MaxHp);
         Alive = this.Hp > 0;
     }
+    public Health(HealthSaveData data) : this(data.Hp, data.MaxHp) { }
 
-    public void ChangeHealth(int amount)
+
+    public void TakeDamage(int amount)
+    {
+        if (amount < 0)
+            throw new ArgumentException("Damage amount cannot be negative", nameof(amount));
+        if (!Alive)
+            return;
+        ChangeHealth(-amount);
+    }
+    public void Heal(int amount)
+    {
+        if (amount < 0)
+            throw new ArgumentException("Heal amount cannot be negative", nameof(amount));
+        if (!Alive || Hp == MaxHp) return;
+        ChangeHealth(amount);
+    }
+
+
+
+    private void ChangeHealth(int amount)
     {
         int newHealth = Hp + amount;
         newHealth = Mathf.Clamp(newHealth, 0, MaxHp);
@@ -35,17 +47,17 @@ public class Health
         bool isHealthChanged = Hp != newHealth;
         if (!isHealthChanged) return;
 
+        Hp = newHealth;
+        HealthChanged?.Invoke(Hp);
 
-        if (newHealth == 0)
+        if (Hp == 0)
         {
             Alive = false;
             Died?.Invoke();
         }
-        else if (newHealth < Hp) Damaged?.Invoke();
-        if (newHealth > Hp) Healed?.Invoke();
+        else if (amount<0) Damaged?.Invoke();
+        else if (amount > 0) Healed?.Invoke();
 
-        Hp = newHealth;
-        HealthChanged?.Invoke(Hp);
     }
 
     public HealthSaveData ExtractData() => new HealthSaveData(Hp, MaxHp);
