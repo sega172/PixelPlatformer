@@ -18,7 +18,7 @@ public class HealthCounter : MonoBehaviour
 
         if (player != null)
         {
-            targetHealth = player.HealthComponent;
+            targetHealth = player.healthComponent;
             Images = new List<Graphic>();
 
             for (int i = 0; i < targetHealth.MaxHp; i++)

@@ -4,6 +4,7 @@ using UnityEngine;
 [Serializable]
 public class Health
 {
+    
     public event Action<int> HealthChanged;
     public event Action Damaged;
     public event Action Healed;
@@ -42,10 +43,10 @@ public class Health
 
     private void ChangeHealth(int amount)
     {
-        int newHealth = Hp + amount;
+        var newHealth = Hp + amount;
         newHealth = Mathf.Clamp(newHealth, 0, MaxHp);
 
-        bool isHealthChanged = Hp != newHealth;
+        var isHealthChanged = Hp != newHealth;
         if (!isHealthChanged) return;
 
         Hp = newHealth;
