@@ -65,7 +65,7 @@ public class Canon : MonoBehaviour
                                 .GetComponent<Projectile>();
 
         projectile.Initialize(1, shootpoint.right, 10, 3);
-        SoudManager.PlaySfx(shootSound);
+        SoundManager.PlaySfx(shootSound);
         
         //StartCoroutine(ShootAnim());
         ShootAnimAsync(_cts.Token).Forget();
@@ -132,7 +132,6 @@ public class Canon : MonoBehaviour
         }
         catch (System.OperationCanceledException)
         {
-            Debug.Log("Анимация отменена");
         }
 
     }

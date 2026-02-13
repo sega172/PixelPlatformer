@@ -8,7 +8,7 @@ public class PlayerHeadHitbox : MonoBehaviour
     {
         if (collision.CompareTag("Ground"))
         {
-            SoudManager.PlaySfx(hitSound, 1f);
+            SoundManager.PlaySfx(hitSound, 1f);
         }
     }
 }

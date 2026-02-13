@@ -1,4 +1,6 @@
+using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class Player : MonoBehaviour, IDamagable
 {
@@ -24,10 +26,19 @@ public class Player : MonoBehaviour, IDamagable
     public bool grounded = false;
     public int jumpsAvailable = 0;
 
+    [SerializeField] private List<AudioClip> hurtSounds;
+
 
     private void Awake()
     {
         healthComponent = new Health(3, 3);
+        healthComponent.Damaged += Damage;
+        healthComponent.Died += Die;
+    }
+    private void OnDisable()
+    {
+        healthComponent.Damaged -= Damage;
+        healthComponent.Died -= Die;
     }
 
     private void Start()
@@ -39,11 +50,20 @@ public class Player : MonoBehaviour, IDamagable
         playerMovement = new(rb, groundCheck, transform);
     }
 
+    void Damage()
+    {
+        SoundManager.PlaySfx(hurtSounds);
+    }
+
+    void Die()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+    }
     private void ChangeGroundedState(bool newGroundedState)
     {
         grounded = newGroundedState;
         if (grounded) jumpsAvailable = 2;
-        if (!grounded && jumpsAvailable == 2) jumpsAvailable = 0;
+        if (!grounded && jumpsAvailable == 2) jumpsAvailable = 1;
         
   
     }
@@ -87,10 +107,10 @@ public class Player : MonoBehaviour, IDamagable
         switch (jumpsAvailable)
         {
             case 2:
-                SoudManager.PlaySfx(jumpSound);
+                SoundManager.PlaySfx(jumpSound);
                 break;
             case 1:
-                SoudManager.PlaySfx(doubleJumpSound);
+                SoundManager.PlaySfx(doubleJumpSound);
                 break;
         }
         jumpsAvailable--;

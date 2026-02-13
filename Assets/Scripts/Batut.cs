@@ -16,7 +16,9 @@ public class Batut : MonoBehaviour
         var rb = other.GetComponent<Rigidbody2D>();
 
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, velocityY);
-        SoudManager.PlaySfx(boostClip);
+
+        if(boostClip != null)
+            SoundManager.PlaySfx(boostClip);
 
         if (resetJumps)
         {
