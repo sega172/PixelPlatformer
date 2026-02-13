@@ -9,16 +9,16 @@ public class TriggerDamageDealer : MonoBehaviour
 
     public event Action DealtDamage;
 
-    private void OnTriggerEnter2D(Collider2D collision)
-    {
-        Debug.Log("Триггер");
-        bool isTarget = (targetLayers & (1 << collision.gameObject.layer)) != 0;
-        if (!isTarget) return;
-        Debug.Log("подходит");
+    private void OnTriggerEnter2D(Collider2D collision) => ProcessCollision(collision.gameObject);
+    private void OnCollisionEnter2D(Collision2D collision) => ProcessCollision(collision.gameObject);
 
-        if (collision.TryGetComponent<IDamagable>(out IDamagable damagable))
+    private void ProcessCollision(GameObject other)
+    {
+        bool isTarget = (targetLayers & (1 << other.layer)) != 0;
+        if (!isTarget) return;
+
+        if (other.TryGetComponent<IDamagable>(out IDamagable damagable))
         {
-            Debug.Log("Взял дамагл");
             damagable.TakeDamage(damage);
             DealtDamage?.Invoke();
         }

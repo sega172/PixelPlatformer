@@ -3,7 +3,7 @@ using UnityEngine;
 public class Player : MonoBehaviour, IDamagable
 {
     public Health healthComponent;
-
+    private PlayerMovement playerMovement;
     
 
 
@@ -32,9 +32,11 @@ public class Player : MonoBehaviour, IDamagable
 
     private void Start()
     {
+        _animator = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         groundCheck.OnGroundChanged.AddListener(ChangeGroundedState);
 
+        playerMovement = new(rb, groundCheck, transform);
     }
 
     private void ChangeGroundedState(bool newGroundedState)
@@ -49,6 +51,8 @@ public class Player : MonoBehaviour, IDamagable
 
     private float _horizontalAxis;
     private bool _jumpPressed;
+    private Animator _animator;
+
     private void Update()
     {
         _horizontalAxis = 0;
@@ -57,8 +61,19 @@ public class Player : MonoBehaviour, IDamagable
         _jumpPressed = Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.UpArrow) || Input.GetKeyDown(KeyCode.W);
 
 
+        if (_horizontalAxis != 0 && !RunAudioSource.isPlaying && grounded)
+        {
+            RunAudioSource.Play();
+        }
+        else if (_horizontalAxis == 0 && RunAudioSource.isPlaying || !grounded)
+        {
+            RunAudioSource.Stop();
+        }
+        
+        
         JumpProcessing();
-
+        _animator.SetBool("IsRunning", _horizontalAxis != 0);
+        playerMovement.HorizontalMovement(_horizontalAxis);
     }
     private void JumpProcessing()
     {

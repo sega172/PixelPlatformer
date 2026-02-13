@@ -19,11 +19,12 @@ public class PlayerMovement
 
     public event Action OnStartRunning, OnStopRunning;
     
-    public PlayerMovement(Rigidbody2D rigidbody2D, GroundCheck groundCheck)
+    public PlayerMovement(Rigidbody2D rigidbody2D, GroundCheck groundCheck, Transform playerTransform)
     {
         rb = rigidbody2D;
         this.groundCheck = groundCheck;
         groundCheck.OnGroundChanged.AddListener(UpdateGroundedState);
+        this.playerTransform = playerTransform;
 
         //подписаться на граундчек
     }
@@ -35,10 +36,10 @@ public class PlayerMovement
 
     void UpdateGroundedState(bool newState)
     {
-        
+        grounded = newState;
     }
     
-    private void HorizontalMovement(float horizontalAxis)
+    public void HorizontalMovement(float horizontalAxis)
     {
         if (grounded) rb.AddForce(Vector2.right * (horizontalForce * Time.deltaTime * horizontalAxis));
         else rb.AddForce(Vector2.right * (horizontalForceInAir * Time.deltaTime * horizontalAxis));
@@ -52,7 +53,7 @@ public class PlayerMovement
 
         if (horizontalAxis > 0) playerTransform.localScale = new Vector2(1, 1);
         if (horizontalAxis < 0) playerTransform.localScale = new Vector2(-1, 1);
-        
+        ApplyVelocityConstraints();
     }
 
     private void ApplyVelocityConstraints()
