@@ -31,7 +31,7 @@ public class PointMover : MonoBehaviour
 
     bool moving = false;
     float elapsedTime = 0;
-    void Update()
+    void FixedUpdate()
     {
 
         if (moving)

@@ -73,6 +73,10 @@ public class Player : MonoBehaviour, IDamagable
         
         JumpProcessing();
         _animator.SetBool("IsRunning", _horizontalAxis != 0);
+    }
+
+    private void FixedUpdate()
+    {
         playerMovement.HorizontalMovement(_horizontalAxis);
     }
     private void JumpProcessing()
