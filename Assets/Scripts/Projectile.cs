@@ -6,7 +6,7 @@ public class Projectile : MonoBehaviour
     bool initialized = false;
     Vector2 direction;
     float speed;
-    [SerializeField] private AudioClip explosionClip;
+    [SerializeField] private GameObject ExplosionPrefab;
 
     public void Initialize(float damage, Vector2 direction, float speed, float lifetime)
     {
@@ -29,12 +29,8 @@ public class Projectile : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (!initialized) return;
-
-        if (explosionClip != null)
-            SoundManager.PlaySfx(explosionClip);
-        else
-            Debug.Log($"У {name} не установлен звук");
-            Destroy(gameObject);
+        Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
+        Destroy(gameObject);
     }
 
 

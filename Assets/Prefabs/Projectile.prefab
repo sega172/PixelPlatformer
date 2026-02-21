@@ -80,7 +80,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 4a8bb963b3d6384439549e1aee9eb6d4, type: 3}
-  m_Color: {r: 0.015319872, g: 0, b: 0.7433963, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -102,7 +102,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90ca19c99aff97646bb0030387dd586d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  explosionClip: {fileID: 8300000, guid: 66b69d1010a10604fb8e80cd1dbb2f9c, type: 3}
+  ExplosionPrefab: {fileID: 7822577018912176567, guid: 591b88fd141287141b237512ced403ba, type: 3}
 --- !u!58 &-1807469273917021372
 CircleCollider2D:
   m_ObjectHideFlags: 0

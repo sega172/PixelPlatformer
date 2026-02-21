@@ -10,6 +10,7 @@ public class Canon : MonoBehaviour
     public float elapsedTime;
 
     public AudioClip shootSound;
+    public AudioSource audioSource;
 
     public bool startDelayElapsed;
 
@@ -65,7 +66,7 @@ public class Canon : MonoBehaviour
                                 .GetComponent<Projectile>();
 
         projectile.Initialize(1, shootpoint.right, 10, 3);
-        SoundManager.PlaySfx(shootSound);
+        audioSource.PlayOneShot(shootSound);
         
         //StartCoroutine(ShootAnim());
         ShootAnimAsync(_cts.Token).Forget();

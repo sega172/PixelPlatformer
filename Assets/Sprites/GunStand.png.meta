@@ -1,13 +1,10 @@
 fileFormatVersion: 2
-guid: 9b64a0619462bc24aaa95b3d2da598a8
+guid: 0325eebc4f44c174896e830d4c19e3e2
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: -246468815986376113
-    second: pLAYER_0
-  - first:
-      213: -7435087648136765822
-    second: pLAYER_1
+      213: -4321617918804568769
+    second: GunStand_0
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -49,7 +46,7 @@ TextureImporter:
   nPOTScale: 0
   lightmap: 0
   compressionQuality: 50
-  spriteMode: 2
+  spriteMode: 1
   spriteExtrude: 1
   spriteMeshType: 1
   alignment: 0
@@ -78,7 +75,7 @@ TextureImporter:
     maxTextureSize: 2048
     resizeAlgorithm: 0
     textureFormat: -1
-    textureCompression: 0
+    textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
@@ -116,89 +113,23 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: pLAYER_0
+      name: GunStand_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 16
         height: 16
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
+      alignment: 0
+      pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
       customData: 
       outline: []
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: f42cbeeeaed549cf0800000000000000
-      internalID: -246468815986376113
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: pLAYER_1
-      rect:
-        serializedVersion: 2
-        x: 16
-        y: 0
-        width: 16
-        height: 16
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: -1
-      bones: []
-      spriteID: 28ed9e24d2341d890800000000000000
-      internalID: -7435087648136765822
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: pLAYER_2
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 0
-        width: 16
-        height: 16
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e412457cc662fa84e9938a263ae4c243
-      internalID: 904724351
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: pLAYER_3
-      rect:
-        serializedVersion: 2
-        x: 48
-        y: 0
-        width: 16
-        height: 16
-      alignment: 7
-      pivot: {x: 0.5, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      customData: 
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: fe6a93dd5818c994a9c137aac9d8503f
-      internalID: 1268072312
+      spriteID: f35d0b656678604c0800000000000000
+      internalID: -4321617918804568769
       vertices: []
       indices: 
       edges: []
@@ -207,7 +138,7 @@ TextureImporter:
     customData: 
     physicsShape: []
     bones: []
-    spriteID: 753f24cd30ef3e844a36967382a63569
+    spriteID: 5e97eb03825dee720800000000000000
     internalID: 0
     vertices: []
     indices: 
@@ -217,10 +148,7 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      pLAYER_0: -246468815986376113
-      pLAYER_1: -7435087648136765822
-      pLAYER_2: 904724351
-      pLAYER_3: 1268072312
+      GunStand_0: -4321617918804568769
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
