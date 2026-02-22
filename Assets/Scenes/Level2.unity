@@ -19605,6 +19605,11 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3762817186096601803, guid: 3134bd135b2cede45b863bc73c385738, type: 3}
   m_PrefabInstance: {fileID: 153109830}
   m_PrefabAsset: {fileID: 0}
+--- !u!50 &804274729 stripped
+Rigidbody2D:
+  m_CorrespondingSourceObject: {fileID: 8466924436306492316, guid: 2fc1f868a104edc4a89dc51b81f313e7, type: 3}
+  m_PrefabInstance: {fileID: 217681719}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &807230141
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -21166,7 +21171,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 91d69a527b8c53a40ac5914cbbce364f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  targetRb: {fileID: 0}
+  targetRb: {fileID: 804274729}
   xMultiplier: 0.3
   yMultiplier: 0.1
   smoothTime: 0.15
