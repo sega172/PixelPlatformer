@@ -1,69 +1,88 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 public class Lever : MonoBehaviour
 {
-    public StatedTrigger left, right;
-    public SpriteRenderer spriteRenderer;
+    public UnityEvent OnSwitch = new();
+    public UnityEvent OnSwitchToLeft = new();
+    public UnityEvent OnSwitchToRight = new();
 
-    private bool leftState = false;
-    private bool rightState = false;
+    [SerializeField] private SpriteRenderer spriteRenderer;
+    [SerializeField] private AudioSource audioSource;
 
-    public AudioClip clip;
-    private void Start()
+    [SerializeField] private LayerMask interactorLayers;
+
+    private bool checking = false;
+    private Vector2 lastLocalPosition;
+
+    private bool right = true;
+    private bool left = false;
+
+    private void OnTriggerStay2D(Collider2D collision)
     {
-        // Подписываемся на события триггеров
-        left.StateChanged += OnLeftTriggerStateChanged;
-        right.StateChanged += OnRightTriggerStateChanged;
-    }
+        if (!checking) return;
+        if (!MatchesLayerMask(collision.gameObject)) return;
 
-    private void OnDestroy()
-    {
-        // Отписываемся от событий при уничтожении объекта
-        left.StateChanged -= OnLeftTriggerStateChanged;
-        right.StateChanged -= OnRightTriggerStateChanged;
-    }
+        Vector2 newPosition = transform.InverseTransformPoint(collision.transform.position);
 
-    private void OnLeftTriggerStateChanged(bool state)
-    {
-        leftState = state;
-        UpdateLeverDirection();
-    }
-
-    private void OnRightTriggerStateChanged(bool state)
-    {
-        rightState = state;
-        UpdateLeverDirection();
-    }
-
-    private void UpdateLeverDirection()
-    {
-        // Если игрок внутри левого триггера и вышел из правого - движение влево
-        if (leftState && !rightState)
+        if (left && lastLocalPosition.x < 0 && newPosition.x > 0)
         {
-            SetLeverDirection("Лево");
+            SwitchToRight();
         }
-        // Если игрок внутри правого триггера и вышел из левого - движение вправо
-        else if (rightState && !leftState)
+        else if (right && lastLocalPosition.x > 0 && newPosition.x < 0)
         {
-            SetLeverDirection("Право");
+            SwitchToLeft();
+        }
+
+        lastLocalPosition = newPosition;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (MatchesLayerMask(collision.gameObject))
+        {
+            lastLocalPosition = transform.InverseTransformPoint(collision.transform.position);
+            checking = true;
         }
     }
 
-    private void SetLeverDirection(string direction)
+    private void OnTriggerExit2D(Collider2D collision)
     {
-        switch (direction)
+        if (MatchesLayerMask(collision.gameObject))
         {
-            case "Лево":
-                spriteRenderer.flipX = true; // Поворачиваем спрайт влево
-                Debug.Log("Рычаг переключен в состояние: Лево");
-                SoundManager.PlaySfx(clip);
-                break;
-
-            case "Право":
-                spriteRenderer.flipX = false; // Возвращаем спрайт в исходное положение (вправо)
-                Debug.Log("Рычаг переключен в состояние: Право");
-                SoundManager.PlaySfx(clip);
-                break;
+            checking = false;
         }
+    }
+    private bool MatchesLayerMask(GameObject gameObject) => ((1 << gameObject.layer) & interactorLayers) != 0;
+
+    private void SwitchToLeft()
+    {
+        left = true;
+        right = false;
+        spriteRenderer.flipX = true;
+        PlaySound();
+        OnSwitch?.Invoke();
+        OnSwitchToLeft?.Invoke();
+    }
+    private void SwitchToRight()
+    {
+        left = false;
+        right = true;
+        spriteRenderer.flipX = false;
+        PlaySound();
+        OnSwitch?.Invoke();
+        OnSwitchToRight?.Invoke();
+    }
+
+    void PlaySound()
+    {
+        if(audioSource == null)
+        {
+            Debug.Log("Не установлен AudioSource", gameObject);
+            return;
+        }
+
+        audioSource.pitch = Random.Range(0.9f, 1.1f);
+        audioSource.Play();
     }
 }

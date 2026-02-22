@@ -8,6 +8,9 @@ public class GroundCheck : MonoBehaviour
     public AudioClip groundSound;
     public float volumeScale = 0.3f;
 
+    [SerializeField] private LayerMask layerMask;
+
+
     private Collider2D groundCheckCollider;
     private ContactFilter2D contactFilter;
     private Collider2D[] results = new Collider2D[5]; // Массив для результатов
@@ -26,7 +29,7 @@ public class GroundCheck : MonoBehaviour
 
         // Настраиваем фильтр контактов
         contactFilter = new ContactFilter2D();
-        contactFilter.SetLayerMask(LayerMask.GetMask("Default")); // Или нужный слой
+        contactFilter.SetLayerMask(layerMask); // Или нужный слой
         contactFilter.useTriggers = true;
     }
 
