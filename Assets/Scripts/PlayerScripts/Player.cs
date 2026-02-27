@@ -1,3 +1,4 @@
+using Cysharp.Threading.Tasks;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -6,31 +7,43 @@ public class Player : MonoBehaviour, IDamagable
 {
     public Health healthComponent;
     private PlayerMovement playerMovement;
-    
+    Vector2 checkpointPosition;    
 
 
     //Jumping
     public float jumpSpeed = 16;
     
     //Visuals
+    public AudioSource RunAudioSource;
     public AudioClip jumpSound;
     public AudioClip doubleJumpSound;
-
-    public AudioSource RunAudioSource;
 
     //GC
     public GroundCheck groundCheck;
 
-    Rigidbody2D rb;
 
+    Rigidbody2D rb;
     public bool grounded = false;
     public int jumpsAvailable = 0;
 
+
     [SerializeField] private List<AudioClip> hurtSounds;
+
+    private float _horizontalAxis;
+    private bool _jumpPressed;
+    private Animator _animator;
+
+
+    private void SetInteractions(bool active)//Название нормальное надо
+    {
+        rb.simulated = active;
+        
+    }
 
 
     private void Awake()
     {
+        checkpointPosition = transform.position;
         healthComponent = new Health(3, 3);
         healthComponent.Damaged += Damage;
         healthComponent.Died += Die;
@@ -53,25 +66,23 @@ public class Player : MonoBehaviour, IDamagable
     void Damage()
     {
         SoundManager.PlaySfx(hurtSounds);
+        DieAnimation(reload: false).Forget();
     }
 
     void Die()
     {
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        
+        DieAnimation(reload: true).Forget();
     }
     private void ChangeGroundedState(bool newGroundedState)
     {
         grounded = newGroundedState;
         if (grounded) jumpsAvailable = 2;
-        if (!grounded && jumpsAvailable == 2) jumpsAvailable = 1;
-        
-  
+        if (!grounded && jumpsAvailable == 2) jumpsAvailable = 1;  
     }
     public void SetJumpsAvailable(int amount) => jumpsAvailable = amount;
 
-    private float _horizontalAxis;
-    private bool _jumpPressed;
-    private Animator _animator;
+    
 
     private void Update()
     {
@@ -121,5 +132,29 @@ public class Player : MonoBehaviour, IDamagable
     public void TakeDamage(int amount)
     {
         healthComponent.TakeDamage(amount);
+    }
+
+    async UniTaskVoid DieAnimation(bool reload)
+    {
+        SetInteractions(false);
+
+        int dieAnimationDurationMs = 1000;
+
+        _animator.SetTrigger("Die");
+
+        await UniTask.Delay(dieAnimationDurationMs);
+
+        if (reload)
+        {
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            return;
+        }
+
+        //телепорт
+        transform.position = checkpointPosition;
+        SetInteractions(true);
+        rb.linearVelocity = Vector2.zero;
+
+        
     }
 }
