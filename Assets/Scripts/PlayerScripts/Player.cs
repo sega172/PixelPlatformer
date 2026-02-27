@@ -7,17 +7,17 @@ public class Player : MonoBehaviour, IDamagable
 {
     public Health healthComponent;
     private PlayerMovement playerMovement;
-    Vector2 checkpointPosition;    
+    Vector2 checkpointPosition;
 
 
     //Jumping
     public float jumpSpeed = 16;
-    
+
     //Visuals
     public AudioSource RunAudioSource;
     public AudioClip jumpSound;
     public AudioClip doubleJumpSound;
-
+    public GameObject DeathParticlesPrefab;
     //GC
     public GroundCheck groundCheck;
 
@@ -37,7 +37,7 @@ public class Player : MonoBehaviour, IDamagable
     private void SetInteractions(bool active)//Название нормальное надо
     {
         rb.simulated = active;
-        
+
     }
 
 
@@ -71,18 +71,18 @@ public class Player : MonoBehaviour, IDamagable
 
     void Die()
     {
-        
+
         DieAnimation(reload: true).Forget();
     }
     private void ChangeGroundedState(bool newGroundedState)
     {
         grounded = newGroundedState;
         if (grounded) jumpsAvailable = 2;
-        if (!grounded && jumpsAvailable == 2) jumpsAvailable = 1;  
+        if (!grounded && jumpsAvailable == 2) jumpsAvailable = 1;
     }
     public void SetJumpsAvailable(int amount) => jumpsAvailable = amount;
 
-    
+
 
     private void Update()
     {
@@ -100,8 +100,8 @@ public class Player : MonoBehaviour, IDamagable
         {
             RunAudioSource.Stop();
         }
-        
-        
+
+
         JumpProcessing();
         _animator.SetBool("IsRunning", _horizontalAxis != 0);
     }
@@ -113,7 +113,7 @@ public class Player : MonoBehaviour, IDamagable
     private void JumpProcessing()
     {
         if (!_jumpPressed || jumpsAvailable <= 0) return;
-        
+
         rb.linearVelocity = new Vector2(rb.linearVelocity.x, jumpSpeed);
         switch (jumpsAvailable)
         {
@@ -127,7 +127,7 @@ public class Player : MonoBehaviour, IDamagable
         jumpsAvailable--;
     }
 
-    
+
 
     public void TakeDamage(int amount)
     {
@@ -137,10 +137,13 @@ public class Player : MonoBehaviour, IDamagable
     async UniTaskVoid DieAnimation(bool reload)
     {
         SetInteractions(false);
+        SpriteRenderer _renderer = GetComponent<SpriteRenderer>();
+        Instantiate(DeathParticlesPrefab, transform.position, Quaternion.identity);
 
         int dieAnimationDurationMs = 1000;
 
-        _animator.SetTrigger("Die");
+        //_animator.SetTrigger("Die");
+        _renderer.enabled = false;
 
         await UniTask.Delay(dieAnimationDurationMs);
 
@@ -153,8 +156,9 @@ public class Player : MonoBehaviour, IDamagable
         //телепорт
         transform.position = checkpointPosition;
         SetInteractions(true);
+        _renderer.enabled = true;
         rb.linearVelocity = Vector2.zero;
 
-        
+
     }
 }

@@ -22,6 +22,7 @@ public class LevelLoaderByTrigger : MonoBehaviour
 
         if(other.TryGetComponent(out SpriteRenderer renderer))
         {
+            Debug.Log("Взял рендерер");
             while(renderer.color.a != 0)
             {
                 Color color = renderer.color;

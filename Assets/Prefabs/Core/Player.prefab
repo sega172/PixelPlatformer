@@ -107,9 +107,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   jumpSpeed: 16
+  RunAudioSource: {fileID: 782762765134429501}
   jumpSound: {fileID: 8300000, guid: 6f89406b5086a8d41b77913c521bc9ce, type: 3}
   doubleJumpSound: {fileID: 8300000, guid: f3fa6594656042447b29dd4f61ed4623, type: 3}
-  RunAudioSource: {fileID: 782762765134429501}
+  DeathParticlesPrefab: {fileID: 614263511969490770, guid: 9e01046a4538aeb42860a5a499d7596d, type: 3}
   groundCheck: {fileID: 6340016447082000838}
   grounded: 0
   jumpsAvailable: 0
@@ -221,7 +222,7 @@ GameObject:
   - component: {fileID: 6515055033405041389}
   - component: {fileID: 7021226241966944882}
   - component: {fileID: 2555297012641060505}
-  m_Layer: 6
+  m_Layer: 8
   m_Name: HeadHitbox
   m_TagString: Untagged
   m_Icon: {fileID: 0}
